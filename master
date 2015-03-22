@@ -1,0 +1,121 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package tree;
+
+/**
+ *
+ * @author 
+ */
+import java.io.*;
+import java.util.*;
+import java.lang.Math;
+
+public class Tree {
+
+    class TreeNode {
+
+        TreeNode left;
+        int memSize;
+        TreeNode right;
+        String process;
+
+        public TreeNode(int size, String proc) {
+            memSize = size;
+            left = right = null;
+            process = proc;
+        }
+
+        public void insert(int size, String proc) {
+            left = new TreeNode(size, proc);
+            right = new TreeNode(size, proc);
+        }
+    }
+
+    /* Now that a TreeNode is defined, we are going to
+     build a binary tree.
+
+     */
+    private static TreeNode root;
+
+    /* Construct an empty binary tree at the root
+     */
+    public Tree() {
+        root = new TreeNode(64, "free");
+    }
+
+    /* Insert a new node in the binary tree. If the
+     root node is null, create the root node now.
+     */
+    public void insertNode(int d, String proc, TreeNode node) {
+        if (isLeaf(node) == true) {
+            node.left = new TreeNode(d, proc);
+            node.right = new TreeNode(d, proc);
+        } else {
+            insertNode(d, proc, node.left);
+
+        }
+    }
+
+    public boolean isLeaf(TreeNode x) {
+        return x.left == null && x.right == null;
+    }
+
+    public int treeSize() {
+        int k = treeSizeDriver(root);
+        return k;
+    }
+
+    public int treeHeight() {
+        int k = treeHeightDriver(root);
+        return k;
+    }
+
+    public int leafCount() {
+        int k = leafCountDriver(root);
+        return k;
+    }
+
+    // count the number of treenodes recursively
+    private int treeSizeDriver(TreeNode r) {
+        if (r == null) {
+            return 0;
+        } else {
+            return (1 + treeSizeDriver(r.left)
+                    + treeSizeDriver(r.right));
+        }
+    }
+
+    // Compute the height of the tree recursively
+    private int treeHeightDriver(TreeNode r) {
+        if (r == null) {
+            return 0;
+        } else {
+            return Math.max(treeHeightDriver(r.left),
+                    treeHeightDriver(r.right)) + 1;
+        }
+    }
+
+    // Count the leaves of a tree recursively
+    private int leafCountDriver(TreeNode r) {
+        if (r == null) {
+            return 0;
+        } else if (r.right == null && r.left == null) {
+            return 1;
+        } else {
+            return leafCountDriver(r.left)
+                    + leafCountDriver(r.right);
+        }
+    }
+
+    public static void main(String args[]) {
+        Tree thisTree = new Tree();
+
+        thisTree.insertNode(32, "free", root);
+        thisTree.insertNode(16, "free", root);
+
+        
+    }
+}
