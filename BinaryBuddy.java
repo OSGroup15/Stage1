@@ -26,11 +26,12 @@ public class BinaryBuddy {
     public static Tree.TreeNode allocate(int size, String proc) {
         Tree.TreeNode newNode;
         newNode = searchSpace(size, root);
-        if (newNode != null && newNode.process.equals("free")) {
+        if (newNode != null && newNode.process.equals("free") && tree.isLeaf(newNode)) {
             newNode.process = proc;
             System.out.println("Space for process " + proc + " found");
             return newNode;
         }
+        
         if (newNode == null && div > 1) {
             double newSize;
             int power;
@@ -44,6 +45,10 @@ public class BinaryBuddy {
         if (newNode == null && (div == 1 || div == 0)) {
             System.out.println("no space available");
         }
+        
+//        else{
+//            System.out.println("No space for process " + proc);
+//        }
 
         return null;
     }
@@ -79,15 +84,18 @@ public class BinaryBuddy {
     public static Tree.TreeNode searchSpace(int mem, Tree.TreeNode node) {
         if (node != null) {
             div = node.memSize / mem;
-            if (div == 1) {
+            if (div ==0){
+                return null;
+            }
+            if (div == 1 && node.process.equals("free")) {
                 return node;
             }
 
             if ((node.left) != null) {
                 return searchSpace(mem, node.left);
             }
-            if ((node.right) != null) {
-                return searchSpace(mem, node.right);
+            if ((node.parent.right) != null) {
+                return searchSpace(mem, node.parent.right);
             }
         }
         //System.out.println("no space available");
@@ -119,8 +127,9 @@ public class BinaryBuddy {
 //        tree.insertNode(8, "free", root);
 //        tree.insertNode(4, "free", root);
 //        System.out.println(tree.treeHeightDriver(root));
-        allocate(4, "A");
-        allocate(64, "B");
+        allocate(32, "A");
+        allocate(32, "B");
+        //allocate(13, "C");
         //Tree.TreeNode n = searchSpace(4, root);
         //System.out.println(div);
         //System.out.println(n.toString(n));
