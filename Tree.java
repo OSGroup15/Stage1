@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package tree;
 
 /**
@@ -19,6 +24,7 @@ public class Tree {
         TreeNode right;
         int memSize;
         String process;
+        TreeNode parent;
 
         /**
          * Creates a TreeNode
@@ -29,6 +35,7 @@ public class Tree {
             memSize = size;
             left = right = null;
             process = proc;
+            parent = null;
         }
 
         /**
@@ -68,6 +75,7 @@ public class Tree {
         if (isLeaf(node) == true) {
             node.left = new TreeNode(mem, proc);
             node.right = new TreeNode(mem, "free");
+            node.left.parent = node.right.parent = node;
         } else {
             insertNode(mem, proc, node.left);
 
