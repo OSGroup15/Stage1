@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tree;
 
 /**
@@ -72,10 +67,12 @@ public class Tree {
      * @param node Treenode
      */
     public void insertNode(int mem, String proc, TreeNode node) {
-        if (isLeaf(node) == true) {
+        if (isLeaf(node) == true && node.process.equals("free")) {
             node.left = new TreeNode(mem, proc);
             node.right = new TreeNode(mem, "free");
             node.left.parent = node.right.parent = node;
+            
+            node.left.parent.process = node.right.parent.process = "non";
         } else {
             insertNode(mem, proc, node.left);
 
@@ -96,11 +93,18 @@ public class Tree {
         int k = treeSizeDriver(root);
         return k;
     }
+    
+    public static void printLeafNodes(TreeNode t)
+{
+      if(t == null)       
+        return;
+       if(t.left == null && t.right==null)      
+          System.out.println(t.memSize + " " + t.process); 
+       printLeafNodes(t.left); 
+       printLeafNodes(t.right);      
+}
 
-//    public int treeHeight() {
-//        int k = treeHeightDriver(root);
-//        return k;
-//    }
+
 
     public int leafCount() {
         int k = leafCountDriver(root);
@@ -118,12 +122,12 @@ public class Tree {
     }
 
     
-    public int treeHeightDriver(TreeNode r) {
+    public int treeHeight(TreeNode r) {
         if (r == null) {
             return 0;
         } else {
-            return Math.max(treeHeightDriver(r.left),
-                    treeHeightDriver(r.right)) + 1;
+            return Math.max(treeHeight(r.left),
+                    treeHeight(r.right)) + 1;
         }
     }
 
