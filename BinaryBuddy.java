@@ -65,8 +65,38 @@ public class BinaryBuddy {
      * @param proc 
      */
     public static void deallocate(String proc) {
-
+        Tree.Treenode tmp = searchProcess(proc, root);
+        if(tmp = null)
+        {
+            System.out.println(" Cannot delete " + proc)''
+        }
+        else
+        {
+        if(tmpPar = root)
+        {
+            tmp.process = "free"
+        }
+        else
+        {
+        Tree.TreeNode tmpPar = tmp.parent;
+        while(tmpPar != root){
+        if(tmpPar.left.process.equals("free"))
+        {
+        tmpPar.left = null;
+        tmpPar.right = null;
+        tmpPar.process = "free";
+        }
+        else if(tmpPar.right.process.equals("free"))
+        {
+            tmpPar.left = null;
+            tmpPar.right = null;
+            tmpPar.process = "free";
+                }
+                tmpPar = tmpPar.parent;
+            }
+        }
     }
+}
 
     /**
      * MIGHT NEED TO BE REDONE
