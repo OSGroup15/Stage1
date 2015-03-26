@@ -16,9 +16,11 @@ public class BinaryBuddy {
     private static Tree tree;
     private static Tree.TreeNode root;
     private static int div;    //the result of TreeNode.memSize / requested mem
+    private static int foundDiv;  // same as div, but saved when possibly match in freeList is found
     private static int memoryUsed;  //sum of memory space used
     private static ArrayList<Tree.TreeNode> freeList = new ArrayList<Tree.TreeNode>();
-                     // holds a free memory blocks ready to hold a process
+
+    // holds a free memory blocks ready to hold a process
     /**
      * Constructor for BinaryBuddy
      */
@@ -31,6 +33,7 @@ public class BinaryBuddy {
 
     /**
      * a method that recursively allocates a memory block, if available
+     *
      * @param size int, requested memory size
      * @param proc String, name of process- A, B, C, etc
      * @return a TreeNode
@@ -48,7 +51,7 @@ public class BinaryBuddy {
             System.out.println("Space for process " + proc + " found");
             return newNode;
         }
-        if ((newNode != null && div > 1)) {
+        if ((newNode != null && foundDiv > 1)) {
             int i = newNode.memSize / 2;
             tree.insertNode(i, "free", newNode);
             return allocate(size, proc);
@@ -61,65 +64,96 @@ public class BinaryBuddy {
     }
 
     /**
-     * TO DO
-     * @param proc 
+     * a method that deallocates memory
+     *
+     * @param proc
      */
     public static void deallocate(String proc) {
-        Tree.Treenode tmp = searchProcess(proc, root);
-        if(tmp = null)
-        {
-            System.out.println(" Cannot delete " + proc)''
-        }
-        else
-        {
-        if(tmpPar = root)
-        {
-            tmp.process = "free"
-        }
-        else
-        {
-        Tree.TreeNode tmpPar = tmp.parent;
-        while(tmpPar != root){
-        if(tmpPar.left.process.equals("free"))
-        {
-        tmpPar.left = null;
-        tmpPar.right = null;
-        tmpPar.process = "free";
-        }
-        else if(tmpPar.right.process.equals("free"))
-        {
-            tmpPar.left = null;
-            tmpPar.right = null;
-            tmpPar.process = "free";
+
+        Tree.TreeNode tmp = searchProcess(proc, root);
+
+        if (tmp == null) {
+            System.out.println(" Cannot delete " + proc);
+
+        } else {
+            memoryUsed = memoryUsed - tmp.memSize;
+            if (tmp == root) {
+                root.process = ("free");
+            } else {
+                Tree.TreeNode tmpPar = tmp.parent;
+                while (tmpPar != root) {
+                    Tree.TreeNode sib;
+                    sib = getSibling(tmp);
+                    if (sib == null) {
+                        return;
+                    } else if (!sib.process.equals("free")) {
+                        tmp.process = "free";
+                        return;
+                    } else if (tmpPar.left.process.equals("free")) {
+                        tmpPar.left = null;
+                        tmpPar.right = null;
+                        tmpPar.process = "free";
+                    } else if (tmpPar.right.process.equals("free")) {
+                        tmpPar.left = null;
+                        tmpPar.right = null;
+                        tmpPar.process = "free";
+                    }
+                    tmp = tmp.parent;
+                    tmpPar = tmpPar.parent;
                 }
-                tmpPar = tmpPar.parent;
+                if (tmpPar == root) {
+                    Tree.TreeNode sib;
+                    sib = getSibling(tmp);
+                    if (sib == null) {
+                        return;
+                    } else if (!sib.process.equals("free")) {
+                        tmp.process = "free";
+                    } else if (tmpPar.left.process.equals("free")) {
+                        tmpPar.process = "free";
+                    } else if (tmpPar.right.process.equals("free")) {
+                        tmpPar.left.process = "free";
+                    }
+                }
             }
         }
     }
-}
 
     /**
-     * MIGHT NEED TO BE REDONE
-     * a method that traverses the nodes of the tree to find a specified name of
-     * a process -- A,B,C, etc.
+     * a method that finds a nodes sibling
+     *
+     * @param sib a TreeNode
+     * @return the sibling node
+     */
+    public static Tree.TreeNode getSibling(Tree.TreeNode sib) {
+        Tree.TreeNode tmp;
+        if (sib == root) {
+            return null;
+        }
+        if (sib.parent.left != sib) {
+            return sib.parent.left;
+        }
+        return sib.parent.right;
+    }
+
+    /**
+     * MIGHT NEED TO BE REDONE a method that traverses the nodes of the tree to
+     * find a specified name of a process -- A,B,C, etc.
      *
      * @param p String, name of the process, A,B,C, etc
      * @param node Treenode,
      * @return the node where String p is found
      */
     public static Tree.TreeNode searchProcess(String p, Tree.TreeNode node) {
+        Tree.TreeNode result = null;
         if (node != null) {
             if (p.equals(node.process)) {
                 return node;
             }
-            if ((node.left) != null) {
-                return searchProcess(p, node.left);
+            if ((result = searchProcess(p, node.left)) != null) {
+                return result;
             }
-            if ((node.right) != null) {
-                return searchProcess(p, node.right);
-            }
+            return searchProcess(p, node.right);
         }
-        System.out.println("no matches found");
         return null;
     }
 
@@ -133,11 +167,16 @@ public class BinaryBuddy {
      */
     public static Tree.TreeNode searchSpace(int mem, Tree.TreeNode node) {
         Tree.TreeNode t = null;
+        Tree.TreeNode found = null;
         freeList.clear();
         getFreeNodes(root);
         for (int i = 0; i < freeList.size(); i++) {
             t = freeList.get(i);
             div = t.memSize / mem;
+            if (div > 1) {
+                found = t;
+                foundDiv = div;
+            }
             if (div == 1) {
                 freeList.clear();
                 return t;
@@ -145,16 +184,15 @@ public class BinaryBuddy {
         }
         if (div == 0) {
             freeList.clear();
-            return null;
+            return found;
         }
         freeList.clear();
         return t;
     }
 
-
-   
     /**
      * a method that fills ArrayList of TreeNodes with free space
+     *
      * @param t a TreeNode
      */
     public static void getFreeNodes(Tree.TreeNode t) {
@@ -174,12 +212,38 @@ public class BinaryBuddy {
         allocate(23, "A");
         allocate(3, "B");
         allocate(4, "C");
-        allocate(17, "D");
+        allocate(7, "D");
         allocate(2, "E");
+        deallocate("D");
+        deallocate("A");
+        allocate(10, "F");
+        allocate(6, "G");
+        allocate(56, "H");
+        deallocate("H");
+        deallocate("B");
+        deallocate("E");
+        allocate(9, "J");
+        allocate(2, "K");
+        allocate(5, "L");
+        deallocate("F");
+        allocate(8, "M");
 
-        
+//        Tree.TreeNode tmp;
+//        
+//        tmp = searchProcess("A", root);
+//        tmp = getSibling(tmp);
+//        if (tmp == null) {
+//            System.out.println("Root has no children");
+//        } else{
+//        System.out.println(tmp.process + " " + tmp.memSize);
+//        }
+//        if (tmp == null) {
+//            System.out.println("no matches found for process ");
+//        } else {
+//            System.out.println(tmp.process + " found");
+//        }
         System.out.println();
-        System.out.println("Free and Used Memory Bloacks:");
+        System.out.println("Free and Used Memory Blocks:");
         tree.printLeafNodes(root);
 
     }
