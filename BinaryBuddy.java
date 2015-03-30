@@ -1,26 +1,28 @@
 package tree;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
+ * Zach Mason, Ryan Schoppy, Darren Martin, Brian Grillo
+ * Operation Systems
+ * Binary Buddy Memory Allocation
  *
- *
+ * version 3.30.2015
  */
+
+
 import java.util.ArrayList;
+import static tree.Tree.printLeafNodes;
 
 public class BinaryBuddy {
 
     private static Tree tree;
-    private static Tree.TreeNode root;
+    protected static Tree.TreeNode root; //protected for Junit testing access
     private static int div;    //the result of TreeNode.memSize / requested mem
     private static int foundDiv;  // same as div, but saved when possibly match in freeList is found
     private static int memoryUsed;  //sum of memory space used
-    private static ArrayList<Tree.TreeNode> freeList = new ArrayList<Tree.TreeNode>();
-
-    // holds a free memory blocks ready to hold a process
+    protected static ArrayList<Tree.TreeNode> freeList = new ArrayList<Tree.TreeNode>();
+                    // holds a free memory blocks ready to hold a process
+    protected static ArrayList<Tree.TreeNode> leafList = new ArrayList<Tree.TreeNode>();
+                    //for testing, holds all leaf nodes, protected for JUnit testing
     /**
      * Constructor for BinaryBuddy
      */
@@ -136,7 +138,7 @@ public class BinaryBuddy {
     }
 
     /**
-     * MIGHT NEED TO BE REDONE a method that traverses the nodes of the tree to
+     * a method that traverses the nodes of the tree to
      * find a specified name of a process -- A,B,C, etc.
      *
      * @param p String, name of the process, A,B,C, etc
@@ -205,19 +207,39 @@ public class BinaryBuddy {
         getFreeNodes(t.left);
         getFreeNodes(t.right);
     }
+    /**
+     * used for testing to fill an ArrayList that contains all leaves of
+     * binary tree which are the nodes that are free and used by a process
+     * @param t 
+     */
+    public static void getLeaves(Tree.TreeNode t){
+        if(t == null){       
+        return;
+        }
+       if(t.left == null && t.right==null){      
+          leafList.add(t);
+       }
+       getLeaves(t.left); 
+       getLeaves(t.right); 
+       //return leafList;
+    }
 
+    /**
+     * used for testing
+     * @param args 
+     */
     public static void main(String args[]) {
         new BinaryBuddy();
 
-        allocate(23, "A");
+        allocate(3, "A");
         allocate(3, "B");
-        allocate(4, "C");
-        allocate(7, "D");
+        allocate(24, "C");
+        allocate(17, "D");
         allocate(2, "E");
         deallocate("D");
         deallocate("A");
         allocate(10, "F");
-        allocate(6, "G");
+        allocate(1, "G");
         allocate(56, "H");
         deallocate("H");
         deallocate("B");
@@ -227,21 +249,9 @@ public class BinaryBuddy {
         allocate(5, "L");
         deallocate("F");
         allocate(8, "M");
-
-//        Tree.TreeNode tmp;
-//        
-//        tmp = searchProcess("A", root);
-//        tmp = getSibling(tmp);
-//        if (tmp == null) {
-//            System.out.println("Root has no children");
-//        } else{
-//        System.out.println(tmp.process + " " + tmp.memSize);
-//        }
-//        if (tmp == null) {
-//            System.out.println("no matches found for process ");
-//        } else {
-//            System.out.println(tmp.process + " found");
-//        }
+        deallocate("J");
+        
+       
         System.out.println();
         System.out.println("Free and Used Memory Blocks:");
         tree.printLeafNodes(root);
