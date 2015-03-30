@@ -1,6 +1,14 @@
 /*
  * Testing class for BinaryBuddy class
  */
+
+/*
+ * Zach Mason, Ryan Schoppy, Darren Martin, Brian Grillo
+ * Operation Systems
+ * Binary Buddy Memory Allocation
+ *
+ * version 3.30.2015
+ */
 package tree;
 
 import java.util.ArrayList;
