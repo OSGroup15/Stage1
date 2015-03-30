@@ -1,3 +1,14 @@
+/*
+ * Tree Class
+ */
+
+/*
+ * Zach Mason, Ryan Schoppy, Darren Martin, Brian Grillo
+ * Operation Systems
+ * Binary Buddy Memory Allocation
+ *
+ * version 3.30.2015
+ */
 package tree;
 
 /**
@@ -88,12 +99,10 @@ public class Tree {
         return x.left == null && x.right == null;
     }
 
-
-    public int treeSize() {
-        int k = treeSizeDriver(root);
-        return k;
-    }
     
+    /**
+     * used for testing, prints out all leaf nodes
+     **/ 
     public static void printLeafNodes(TreeNode t)
 {
       if(t == null)       
@@ -103,44 +112,5 @@ public class Tree {
        printLeafNodes(t.left); 
        printLeafNodes(t.right);      
 }
-
-
-
-    public int leafCount() {
-        int k = leafCountDriver(root);
-        return k;
-    }
-
-    
-    private int treeSizeDriver(TreeNode r) {
-        if (r == null) {
-            return 0;
-        } else {
-            return (1 + treeSizeDriver(r.left)
-                    + treeSizeDriver(r.right));
-        }
-    }
-
-    
-    public int treeHeight(TreeNode r) {
-        if (r == null) {
-            return 0;
-        } else {
-            return Math.max(treeHeight(r.left),
-                    treeHeight(r.right)) + 1;
-        }
-    }
-
-    
-    private int leafCountDriver(TreeNode r) {
-        if (r == null) {
-            return 0;
-        } else if (r.right == null && r.left == null) {
-            return 1;
-        } else {
-            return leafCountDriver(r.left)
-                    + leafCountDriver(r.right);
-        }
-    }
 
 }
