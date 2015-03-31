@@ -25,6 +25,7 @@ public class BinaryBuddy {
                     //for testing, holds all leaf nodes, protected for JUnit testing
     /**
      * Constructor for BinaryBuddy
+     * creates 1 memory block size 64
      */
     public BinaryBuddy() {
         tree = new Tree();
@@ -41,7 +42,7 @@ public class BinaryBuddy {
      * @return a TreeNode
      */
     public static Tree.TreeNode allocate(int size, String proc) {
-        if (memoryUsed + size > 64) {
+        if (memoryUsed + size > 64) { //checks if enough space available
             System.out.println("no more space available for process " + proc);
             return null;
         }
@@ -68,7 +69,7 @@ public class BinaryBuddy {
     /**
      * a method that deallocates memory
      *
-     * @param proc
+     * @param proc - String, name of process
      */
     public static void deallocate(String proc) {
 
@@ -171,7 +172,7 @@ public class BinaryBuddy {
         Tree.TreeNode t = null;
         Tree.TreeNode found = null;
         freeList.clear();
-        getFreeNodes(root);
+        getFreeNodes(root);   //gets most current list of free nodes
         for (int i = 0; i < freeList.size(); i++) {
             t = freeList.get(i);
             div = t.memSize / mem;
@@ -221,7 +222,6 @@ public class BinaryBuddy {
        }
        getLeaves(t.left); 
        getLeaves(t.right); 
-       //return leafList;
     }
 
     /**
